@@ -1,6 +1,6 @@
 # Doctolib vaccine appointment searcher
 
-> Find vaccination appointments near Paris, France. Sends email when an appointment is find.
+> Find vaccination appointments near Paris, France. Sends email when an appointment is found.
 ---
 
 ### Table of Contents
@@ -34,7 +34,7 @@ In doctolib_data_collector, change <b>PATH</b> to the path to your webdriver.
 Add a credentials.json file to your folder. It will contain your <b>gmail</b> account credentials.
 ```json
 {
-    "EMAIL_ADDRESS": "name.lastname@gmail.com"
+    "EMAIL_ADDRESS": "name.lastname@gmail.com",
     "EMAIL_PASSWORD": "password"
 }
 ```
