@@ -18,7 +18,6 @@ class DoctolibDataCollector:
     def available_center(calendar_text):
         """
         Check if the center proposes vaccines. Based on the text present on the calendar.
-
         """
         BANNED_SENTENCES = ["Aucun rendez-vous de vaccination n'est disponible dans ce lieu d'ici demain soir",
                             "Aucune disponibilité en ligne."]
@@ -53,6 +52,9 @@ class DoctolibDataCollector:
 
     @staticmethod
     def format_informations(informations):
+        """
+        Extract address informations from center informations.
+        """
         info = informations.split("\n")
         if len(info) < 3:
             return None
@@ -69,11 +71,17 @@ class DoctolibDataCollector:
 
     @staticmethod
     def format_title(title):
+        """
+        Extract name and type
+        """
         name = title.split("\n")[0]
         type_ = title.split("\n")[1]
         return name, type_
     
     def get_centers_information(self):
+        """
+        Extract information from all centers proposed in the 4 first pages of Doctolib.
+        """
         self.driver.get(DOCTOLIB)
         disagree_button = self.driver.find_element_by_id("didomi-notice-disagree-button")
         disagree_button.click()
@@ -114,6 +122,9 @@ class DoctolibDataCollector:
         self.driver.quit()
     
     def save_centers_info_as_json(self, file_path="vaccination_centers.json"):
+        """
+        Save all centers informations in a json file.
+        """
         with open(file_path, 'w+') as f:
             centers_json = json.dumps(self.centers_dict, ensure_ascii=False, indent=4)
             f.write(centers_json)
