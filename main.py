@@ -12,9 +12,7 @@ FILTERS = {
             "zip_code": None,
             "city": ["Paris"],
         }
-# RECEIVER_ADDRESS = "jeanmichel.vaccin@gmail.fr"
-RECEIVER_ADDRESS = "gas20trinier@hotmail.fr"
-
+RECEIVER_ADDRESS = "jeanmichel.vaccin@gmail.fr"
 
 def main():
     ddc = DoctolibDataCollector()
