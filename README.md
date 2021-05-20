@@ -39,6 +39,20 @@ Add a credentials.json file to your folder. It will contain your <b>gmail</b> ac
 }
 ```
 
+Add a <b>search_informations.json</b> to your folder.
+```json
+{
+    "location": "Paris", // your location
+    "vaccines": [  // Keep only the ones that you want
+        "pfizer",
+        "moderna",
+        "astrazeneca",
+        "jansen"
+    ],
+    "waiting_days": 3 // You want an appointment between 1 and 3 days
+}
+```
+
 
 ### How to use
 
