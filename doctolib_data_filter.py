@@ -2,7 +2,7 @@ import json
 
 
 class DoctolibDataFilter:
-    def __init__(self, file_path, filters):
+    def __init__(self, filters, file_path="vaccination_centers.json"):
         with open(file_path, "r") as f:
             self.centers_info = json.load(f)
         self.filters = filters

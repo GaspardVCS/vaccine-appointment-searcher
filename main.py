@@ -6,20 +6,20 @@ from email_sender import DoctolibMessageFormatter, EmailSender
 
 
 TIME_OUT = 2 * 60  # s
-FILE_PATH = "vaccination_centers.json"
+RECEIVER_ADDRESS = "jeanmichel.vaccin@gmail.com"
 FILTERS = {
             "calendar": True,
             "zip_code": None,
-            "city": ["Paris"],
+            "city": None,
         }
-RECEIVER_ADDRESS = "jeanmichel.vaccin@gmail.fr"
+
 
 def main():
     ddc = DoctolibDataCollector()
     ddc.get_centers_information()
     ddc.save_centers_info_as_json()
 
-    ddf = DoctolibDataFilter(FILE_PATH, FILTERS)
+    ddf = DoctolibDataFilter(FILTERS)
     ddf.save_centers_info_as_json()
 
     with open("filtered_vaccination_centers.json", "r") as f:
@@ -38,4 +38,3 @@ def main():
 if __name__ == "__main__":
     while True:
         main()
-        
