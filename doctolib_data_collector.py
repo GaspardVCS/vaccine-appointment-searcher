@@ -10,9 +10,31 @@ TIME_OUT = 10  # seconds
 
 
 class DoctolibDataCollector:
-    def __init__(self):
+    def __init__(self, info_path="search_informations.json"):
         self.driver = webdriver.Chrome(PATH)
         self.centers_dict = dict()
+        self.info_path = info_path
+        self.url = self.create_search_url()
+    
+    def create_search_url(self):
+        with open(self.info_path, "r") as f:
+            search_info = json.load(f)
+        location = search_info["location"]
+        vaccines = search_info["vaccines"]
+        waiting_days = search_info["waiting_days"]
+        vaccine_index = {
+            "pfizer": "6970",
+            "moderna": "7005",
+            "astrazeneca": "7107",
+            "jansen": "7945"}
+        url = "https://www.doctolib.fr/vaccination-covid-19/"
+        url += location.lower() + "?"
+        for vaccine in vaccines:
+            url += "ref_visit_motive_ids[]=" + vaccine_index[vaccine] + "&"
+        url = url[:-1]
+        if waiting_days is not None:
+            url += f"&force_max_limit={waiting_days}"
+        return url
 
     @staticmethod
     def available_center(calendar_text):
@@ -82,7 +104,7 @@ class DoctolibDataCollector:
         """
         Extract information from all centers proposed in the 4 first pages of Doctolib.
         """
-        self.driver.get(DOCTOLIB)
+        self.driver.get(self.url)
         disagree_button = self.driver.find_element_by_id("didomi-notice-disagree-button")
         disagree_button.click()
         time.sleep(0.5)
@@ -93,31 +115,34 @@ class DoctolibDataCollector:
             page_button.click()
             centers = self.driver.find_elements_by_css_selector("div.dl-search-result")
             for center in centers:
-                center_title = center.find_element_by_css_selector("div.dl-search-result-title")
-                center_calendar = center.find_element_by_css_selector("div.dl-search-result-calendar")
-                center_informations = center.find_element_by_css_selector("div.dl-search-result-content")
-                center_url = center.find_element_by_css_selector("a.dl-button-primary.dl-button.js-search-result-path").get_attribute("href")
-                t_calendar = time.time() + TIME_OUT
-                while not center_calendar.text:
+                try: # Pharmacie pas encore prise en compte, format de "informations" different
+                    center_title = center.find_element_by_css_selector("div.dl-search-result-title")
                     center_calendar = center.find_element_by_css_selector("div.dl-search-result-calendar")
-                    center_calendar.location_once_scrolled_into_view # returns dict of X, Y coordinates
-                    if time.time() > t_calendar:
-                        break
-                while not center_informations.text:
-                    center_informations = center.find_element_by_css_selector("div.dl-search-result-specialities")
-                    center.informations.location_once_scrolle_into_view
-                
-                center_name, center_type = self.format_title(center_title.text)
-                calendar = self.format_date(center_calendar.text)
-                location, vaccination_rooms = self.format_informations(center_informations.text)
-                
-                self.centers_dict[center_name] = {
-                    "type": center_type,
-                    "vaccination rooms": vaccination_rooms,
-                    "calendar": calendar,
-                    "location": location,
-                    "url": center_url,
-                }
+                    center_informations = center.find_element_by_css_selector("div.dl-search-result-content")
+                    center_url = center.find_element_by_css_selector("a.dl-button-primary.dl-button.js-search-result-path").get_attribute("href")
+                    t_calendar = time.time() + TIME_OUT
+                    while not center_calendar.text:
+                        center_calendar = center.find_element_by_css_selector("div.dl-search-result-calendar")
+                        center_calendar.location_once_scrolled_into_view # returns dict of X, Y coordinates
+                        if time.time() > t_calendar:
+                            break
+                    while not center_informations.text:
+                        center_informations = center.find_element_by_css_selector("div.dl-search-result-specialities")
+                        center.informations.location_once_scrolle_into_view
+                    
+                    center_name, center_type = self.format_title(center_title.text)
+                    calendar = self.format_date(center_calendar.text)
+                    location, vaccination_rooms = self.format_informations(center_informations.text)
+                    
+                    self.centers_dict[center_name] = {
+                        "type": center_type,
+                        "vaccination rooms": vaccination_rooms,
+                        "calendar": calendar,
+                        "location": location,
+                        "url": center_url,
+                    }
+                except:
+                    pass
             
         self.driver.quit()
     
