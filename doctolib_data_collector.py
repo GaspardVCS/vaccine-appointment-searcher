@@ -1,16 +1,18 @@
 import time
 from  selenium import webdriver
 import json
+import os
 
 
 PATH = "/usr/local/bin/chromedriver"
+_BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 DOCTOLIB = "https://www.doctolib.fr/vaccination-covid-19/paris?ref_visit_motive_ids[]=6970&ref_visit_motive_ids[]=7005&force_max_limit=2"
 TIME_OUT = 10  # seconds
 
 
 class DoctolibDataCollector:
-    def __init__(self, info_path="search_informations.json"):
+    def __init__(self, info_path=os.path.join(_BASE_DIR, "search_informations.json")):
         self.driver = webdriver.Chrome(PATH)
         self.centers_dict = dict()
         self.info_path = info_path
@@ -146,7 +148,7 @@ class DoctolibDataCollector:
             
         self.driver.quit()
     
-    def save_centers_info_as_json(self, file_path="vaccination_centers.json"):
+    def save_centers_info_as_json(self, file_path=os.path.join(_BASE_DIR, "vaccination_centers.json")):
         """
         Save all centers informations in a json file.
         """

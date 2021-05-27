@@ -1,8 +1,10 @@
 import json
+import os
 
+_BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 class DoctolibDataFilter:
-    def __init__(self, filters, file_path="vaccination_centers.json"):
+    def __init__(self, filters, file_path=os.path.join(_BASE_DIR, "vaccination_centers.json")):
         with open(file_path, "r") as f:
             self.centers_info = json.load(f)
         self.filters = filters

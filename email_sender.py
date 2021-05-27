@@ -3,7 +3,10 @@ import smtplib
 import os
 from email.message import EmailMessage
 
-with open("credentials.json", "r") as f:
+
+_BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+with open(os.path.join(_BASE_DIR, "credentials.json"), "r") as f:
     cred = json.load(f)
 
 os.environ["EMAIL_ADDRESS"] = cred["EMAIL_ADDRESS"]
@@ -14,7 +17,7 @@ EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD")
 
 
 class DoctolibMessageFormatter:
-    def __init__(self, file_path="filtered_vaccination_centers.json"):
+    def __init__(self, file_path=os.path.join(_BASE_DIR, "filtered_vaccination_centers.json")):
         with open(file_path, "r") as f:
             self.centers = json.load(f)
 
