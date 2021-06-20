@@ -7,7 +7,6 @@ import os
 PATH = "/usr/local/bin/chromedriver"
 _BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-DOCTOLIB = "https://www.doctolib.fr/vaccination-covid-19/paris?ref_visit_motive_ids[]=6970&ref_visit_motive_ids[]=7005&force_max_limit=2"
 TIME_OUT = 10  # seconds
 
 
